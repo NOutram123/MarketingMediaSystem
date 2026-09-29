@@ -1,6 +1,13 @@
 # Hybrid AI Media Studio
 
-First-time installation: clone or download this repository and double-click **Setup.cmd**, then follow the required local setup wizard. Use **Launch.cmd** thereafter. See [Easy Setup](EASY_SETUP.md), the [assistant installation prompt](SETUP_PROMPT.md), and the [PDF guide](output/pdf/easy-setup.pdf). Windows 11 and NVIDIA CUDA are required; RTX 8 GB is a provisional recommendation, and RTX 5070 Ti 16 GB is the tested configuration.
+First-time installation: clone or download this repository and double-click **Setup.cmd**, then follow the required local setup wizard. Use **Launch.cmd** thereafter. Windows 11 and NVIDIA CUDA are required; RTX 8 GB is a provisional recommendation, and RTX 5070 Ti 16 GB is the tested configuration.
+
+## Guides
+
+- **[Illustrated User Manual](output/pdf/USER_MANUAL.pdf)** - a 23-page guide to briefs, uploaded references, concepts, scripts, storyboards, local rough cuts and Higgsfield evaluations, with worked examples and annotated screenshots.
+- **[Easy Setup PDF](output/pdf/easy-setup.pdf)** - the printable installation and first-run checklist.
+- [Easy Setup](EASY_SETUP.md) - the accessible text version of the setup guide.
+- [Assistant installation prompt](SETUP_PROMPT.md) - a ready-to-use installation request for ChatGPT Work or Codex.
 
 A local-first marketing media workstation for Windows, with an optional Higgsfield cloud evaluation path.
 

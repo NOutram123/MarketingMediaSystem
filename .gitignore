@@ -18,3 +18,4 @@ docs/hardware_software_audit.json
 /output/*
 !/output/pdf/
 !/output/pdf/easy-setup.pdf
+!/output/pdf/USER_MANUAL.pdf

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" role="img" aria-labelledby="title desc">
+  <title id="title">Northstar Flow logo</title>
+  <desc id="desc">A cream compass star beside the Northstar Flow wordmark on deep teal.</desc>
+  <rect width="900" height="260" rx="28" fill="#123b3a"/>
+  <g transform="translate(76 48)" fill="none" stroke="#f2eadf" stroke-width="5" stroke-linejoin="round">
+    <path d="M82 0 97 65 164 82 97 99 82 164 67 99 0 82 67 65Z"/>
+    <path d="m82 31 8 43 43 8-43 8-8 43-8-43-43-8 43-8Z" stroke="#c97943"/>
+    <circle cx="82" cy="82" r="9" fill="#f2eadf" stroke="none"/>
+  </g>
+  <text x="282" y="112" fill="#f2eadf" font-family="Arial, Helvetica, sans-serif" font-size="55" font-weight="700" letter-spacing="8">NORTHSTAR</text>
+  <text x="285" y="173" fill="#c97943" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="600" letter-spacing="18">FLOW</text>
+</svg>
