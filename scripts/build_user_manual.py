@@ -103,6 +103,7 @@ def footer(c, page, dark=False):
     c.setFont(FONT, 7.2)
     c.setFillColor(colour)
     c.drawString(M, 16, "MARKETING MEDIA SYSTEM | USER MANUAL | SEPTEMBER 2026")
+    c.setFont("Helvetica-Bold", 7.5)
     c.drawRightString(W - M, 16, f"{page:02d}")
 
 
@@ -219,7 +220,14 @@ def number_marker(c, x, y, number, colour=COPPER):
     c.drawCentredString(x, y - 3, str(number))
 
 
-def table(c, x, y, widths, rows, row_heights, header=True, dark=False):
+def marker_link(c, x, y, number, target_x, colour=COPPER):
+    c.setStrokeColor(colour)
+    c.setLineWidth(1.2)
+    c.line(x + 10, y, target_x - 6, y)
+    number_marker(c, x, y, number, colour)
+
+
+def table(c, x, y, widths, rows, row_heights, header=True, dark=False, font_size=7.6, leading=10):
     total = sum(widths)
     current_y = y
     for row_index, row in enumerate(rows):
@@ -233,10 +241,10 @@ def table(c, x, y, widths, rows, row_heights, header=True, dark=False):
             c.rect(cx, current_y - rh, widths[index], rh, fill=0, stroke=1)
             style = "card_dark" if dark or (header and row_index == 0) else "card"
             text_colour = CREAM if dark or (header and row_index == 0) else INK
-            pstyle = ParagraphStyle(f"cell-{row_index}-{index}", parent=STYLES[style], fontName=SEMI if row_index == 0 else FONT, textColor=text_colour, fontSize=7.6, leading=10)
+            pstyle = ParagraphStyle(f"cell-{row_index}-{index}", parent=STYLES[style], fontName=SEMI if row_index == 0 else FONT, textColor=text_colour, fontSize=font_size, leading=leading)
             p = Paragraph(rich(value), pstyle)
             _, ph = p.wrap(widths[index] - 12, rh - 8)
-            p.drawOn(c, cx + 6, current_y - 5 - ph)
+            p.drawOn(c, cx + 6, current_y - rh + (rh - ph) / 2)
             cx += widths[index]
         current_y -= rh
     return current_y
@@ -255,6 +263,35 @@ def flow_arrow(c, x1, x2, y, colour=TEAL):
     c.drawPath(p, fill=1, stroke=0)
 
 
+def flow_down_arrow(c, x, y_top, y_bottom, colour=TEAL):
+    c.setStrokeColor(colour)
+    c.setLineWidth(2)
+    c.line(x, y_top, x, y_bottom + 8)
+    c.setFillColor(colour)
+    p = c.beginPath()
+    p.moveTo(x, y_bottom)
+    p.lineTo(x - 5, y_bottom + 8)
+    p.lineTo(x + 5, y_bottom + 8)
+    p.close()
+    c.drawPath(p, fill=1, stroke=0)
+
+
+def workflow_card(c, x, y, w, h, number, title, body, accent=TEAL):
+    c.setFillColor(PANEL)
+    c.setStrokeColor(colors.HexColor("#38545D"))
+    c.roundRect(x, y - h, w, h, 12, fill=1, stroke=1)
+    centre_y = y - h / 2
+    c.setFillColor(accent)
+    c.circle(x + 25, centre_y, 13, fill=1, stroke=0)
+    c.setFillColor(INK)
+    c.setFont(BOLD, 9)
+    c.drawCentredString(x + 25, centre_y - 3, str(number))
+    c.setFillColor(CREAM)
+    c.setFont(SEMI, 10.5)
+    c.drawString(x + 48, centre_y + 6, title)
+    para(c, body, x + 48, centre_y - 2, w - 64, "card_dark", 0)
+
+
 def build():
     OUT.parent.mkdir(parents=True, exist_ok=True)
     c = canvas.Canvas(str(OUT), pagesize=A4, pageCompression=1)
@@ -266,9 +303,9 @@ def build():
     c.setFillColor(INK); c.rect(0, 0, W, H, fill=1, stroke=0)
     draw_crop(c, ASSETS / "northstar-lifestyle.png", 0, H, W, 365, anchor=(0.65, 0.52), radius=0, border=False)
     c.setFillColor(colors.Color(13/255, 23/255, 30/255, alpha=0.58)); c.rect(0, H - 365, W, 365, fill=1, stroke=0)
-    c.setFillColor(TEAL_LIGHT); c.setFont(SEMI, 9); c.drawString(M, H - 54, "MARKETING MEDIA SYSTEM")
+    c.setFillColor(TEAL_LIGHT); c.setFont(SEMI, 16); c.drawString(M, H - 58, "MARKETING MEDIA SYSTEM")
     c.setFillColor(CREAM); c.setFont(BOLD, 35); c.drawString(M, H - 105, "USER MANUAL")
-    c.setFont(FONT, 14); c.drawString(M, H - 133, "From brief to reviewed moving-image draft")
+    c.setFont(FONT, 14); c.drawString(M, H - 136, "From brief to 15-60 second YouTube video")
     pill(c, "WINDOWS 11 + NVIDIA CUDA", M, H - 167, COPPER, WHITE)
     draw_crop(c, ASSETS / "northstar-product.png", W - 206, 420, 155, 285, anchor=(0.5, 0.5), radius=18)
     y = 400
@@ -282,8 +319,7 @@ def build():
     card(c, M, y, 244, 105, "Local-first creative workstation", "The studio keeps project state, references and local draft generation on this Windows PC. OpenAI planning and Higgsfield evaluation are optional provider paths.", TEAL)
     card(c, M + 263, y, 244, 105, "Review before generation", "Brief, concept and storyboard gates make decisions visible. Paid cloud generation requires a separate estimate and approval.", COPPER)
     y -= 127
-    callout(c, M, y, W - 2*M, "Current output policy", "Every local output and the Higgsfield evaluation path are [[AI-generated, non-commercial drafts]]. The current system does not provide a commercial final export path.", "warning")
-    y -= 3
+    y = callout(c, M, y, W - 2*M, "Current output policy", "Every local output and the Higgsfield evaluation path are [[AI-generated, non-commercial drafts]]. The current system does not provide a commercial final export path.", "warning") - 4
     c.setFillColor(TEAL_DARK); c.setFont(BOLD, 13); c.drawString(M, y, "Inside this guide")
     y -= 17
     contents = [
@@ -310,12 +346,14 @@ def build():
         (4, "Storyboard", "Variable scene timing, prompts and references"),
         (5, "Review paths", "Local rough cut or approved cloud evaluation"),
     ]
+    card_h = 70
+    card_gap = 23
     for i, title, body in steps:
-        card(c, M, y, W - 2*M, 74, title, body, COPPER if i == 5 else TEAL, dark=True, number=i)
+        workflow_card(c, M, y, W - 2*M, card_h, i, title, body, COPPER if i == 5 else TEAL)
         if i < 5:
-            flow_arrow(c, W/2, W/2, y - 78)
-        y -= 91
-    callout(c, M, y + 4, W - 2*M, "Approval rule", "An approval is a checkpoint, not a lock forever. Request changes when needed; the studio resets dependent work so old outputs are not mistaken for current ones.", "dark", dark=True)
+            flow_down_arrow(c, W/2, y - card_h - 4, y - card_h - card_gap + 4, TEAL_LIGHT)
+        y -= card_h + card_gap
+    callout(c, M, y + 10, W - 2*M, "Approval rule", "An approval is a checkpoint, not a permanent lock. Request changes when needed; the studio resets dependent work so older outputs are not mistaken for the current version.", "dark", dark=True)
     c.showPage()
 
     # 04 - Interface anatomy
@@ -334,10 +372,13 @@ def build():
     # 05 - Step 1 screenshot
     y = page(c, 5, "01 / Input", "Brief & brand", "This stage defines what the film must achieve and the boundaries the plan must respect.")
     draw_contain(c, SHOTS / "02-brief-brand.png", M, y, 292, 570, bg=INK)
-    number_marker(c, M + 272, y - 36, 1); number_marker(c, M + 272, y - 178, 2); number_marker(c, M + 272, y - 372, 3); number_marker(c, M + 272, y - 525, 4)
     x = M + 311; cy = y
+    marker_link(c, M + 272, cy - 43, 1, x)
+    marker_link(c, M + 272, cy - 150.5, 2, x)
+    marker_link(c, M + 272, cy - 263, 3, x)
+    marker_link(c, M + 272, cy - 371, 4, x)
     card(c, x, cy, 196, 86, "1. Target length", "Choose 15, 30, 45 or 60 seconds. All scene timings must later add up to this target.", TEAL)
-    card(c, x, cy - 98, 196, 105, "2. The assignment", "State the audience, objective, message, tone, must-show content, exclusions and deliverable. Put a supplied treatment in its own field.", COPPER)
+    card(c, x, cy - 98, 196, 105, "2. The assignment", "State the audience, objective, single message, tone, must-show content, exclusions and deliverable. Put a supplied script or timed treatment in Existing treatment.", COPPER)
     card(c, x, cy - 215, 196, 96, "3. Brand controls", "Describe the product and visual style. Add only claims and wording that a responsible reviewer has checked.", TEAL)
     card(c, x, cy - 323, 196, 96, "4. CTA and approval", "Tell viewers what to do next, then approve the brief when every required rule is represented.", COPPER)
     callout(c, x, cy - 434, 196, "Impact", "Saving changes to the brief, brand or target length resets the current plan and approvals. Uploaded reference images remain available.", "warning")
@@ -411,8 +452,10 @@ def build():
     # 10 - Step 2 screenshot
     y = page(c, 10, "02 / Sources", "Existing images", "Upload reusable visual references, describe what matters, then choose them scene by scene.")
     draw_contain(c, SHOTS / "03-existing-images.png", M, y, 305, 570, bg=INK)
-    number_marker(c, M + 280, y - 34, 1); number_marker(c, M + 280, y - 180, 2); number_marker(c, M + 280, y - 370, 3)
     x = M + 324; cy = y
+    marker_link(c, M + 280, cy - 46, 1, x)
+    marker_link(c, M + 280, cy - 157, 2, x)
+    marker_link(c, M + 280, cy - 274.5, 3, x)
     card(c, x, cy, 183, 92, "1. Upload", "Accepted reference types are PNG, JPEG and WebP. Use a clear, relevant image rather than a crowded contact sheet.", TEAL)
     card(c, x, cy - 105, 183, 104, "2. Role + description", "Choose character, product, style, location or other. Describe the identity, attributes and visual qualities worth preserving.", COPPER)
     card(c, x, cy - 222, 183, 105, "3. Reusable library", "Saved images remain available across the project. Select a card to revise its role or description.", TEAL)
@@ -462,12 +505,15 @@ def build():
     # 13 - Step 3
     y = page(c, 13, "03 / Direction", "Concept & script", "Turn the approved brief into one creative idea and one continuous narration track.")
     draw_contain(c, SHOTS / "04-concept-script.png", M, y, 300, 555, bg=INK)
-    number_marker(c, M + 277, y - 42, 1); number_marker(c, M + 277, y - 165, 2); number_marker(c, M + 277, y - 330, 3); number_marker(c, M + 277, y - 468, 4)
     x = M + 320; cy = y
+    marker_link(c, M + 277, cy - 44, 1, x)
+    marker_link(c, M + 277, cy - 151.5, 2, x)
+    marker_link(c, M + 277, cy - 263.5, 3, x)
+    marker_link(c, M + 277, cy - 372, 4, x)
     card(c, x, cy, 187, 88, "1. Concept", "Explain what happens, the visual progression and why it supports the objective.", TEAL)
     card(c, x, cy - 101, 187, 101, "2. Continuous script", "Write one narration across the whole film. The storyboard later divides timing cues by scene.", COPPER)
     card(c, x, cy - 215, 187, 97, "3. Planning preview", "Check duration, expected shot count, input size and warnings before a paid planning request.", TEAL)
-    card(c, x, cy - 325, 187, 94, "4. Generate or edit", "Enter your own direction, extract a supplied treatment for free, or call the paid OpenAI planning path.", COPPER)
+    card(c, x, cy - 325, 187, 94, "4. Generate or edit", "Enter your own direction, extract a supplied treatment without an API call, or request an OpenAI-generated first version.", COPPER)
     callout(c, x, cy - 433, 187, "Approval", "Approve only when the concept and narration express the approved brief. Request changes to reopen editing.", "warning")
     c.showPage()
 
@@ -481,7 +527,7 @@ def build():
         ["Leave space for the CTA and disclaimer.", "Rushing legal or qualifying language."],
         ["Keep one continuous narrative voice.", "Writing each scene as a disconnected advert."],
     ]
-    y = table(c, M, y, [253, 254], rows, [30, 47, 47, 47, 47, 47]) - 18
+    y = table(c, M, y, [253, 254], rows, [30, 47, 47, 47, 47, 47], font_size=9.2, leading=12) - 18
     callout(c, M, y, W - 2*M, "Northstar example - 41 words", "'Your day rarely follows one route. From the first train to the last climb, Northstar Flow keeps drinks cold for up to twenty-four hours. Made with recycled stainless steel, it is ready when plans change. Choose your route with Northstar Flow.'", "teal")
     y -= 115
     c.setFillColor(TEAL_DARK); c.setFont(BOLD, 13); c.drawString(M, y, "Using an existing treatment")
@@ -498,11 +544,14 @@ def build():
     # 15 - Step 4
     y = page(c, 15, "04 / Sequence", "Storyboard", "Break the approved direction into timed scenes. Each scene combines intent, visuals, camera direction, narration timing and generation prompts.")
     draw_contain(c, SHOTS / "05-storyboard.png", M, y, 327, 590, bg=INK)
-    number_marker(c, M + 305, y - 55, 1); number_marker(c, M + 305, y - 185, 2); number_marker(c, M + 305, y - 360, 3); number_marker(c, M + 305, y - 515, 4)
     x = M + 346; cy = y
+    marker_link(c, M + 305, cy - 41.5, 1, x)
+    marker_link(c, M + 305, cy - 143.5, 2, x)
+    marker_link(c, M + 305, cy - 257, 3, x)
+    marker_link(c, M + 305, cy - 369, 4, x)
     card(c, x, cy, 161, 83, "1. Sequence tools", "Revise all scenes together or edit one scene in place.", TEAL)
     card(c, x, cy - 95, 161, 97, "2. Scene intent", "Purpose, visual and duration should make the scene's job clear before prompt detail.", COPPER)
-    card(c, x, cy - 204, 161, 106, "3. Reference choices", "Suggestions are optional. Assign a selected image and write guidance for this scene.", TEAL)
+    card(c, x, cy - 204, 161, 106, "3. Reference choices", "Suggestions are optional. Select only the references this scene needs, then add specific guidance.", TEAL)
     card(c, x, cy - 322, 161, 94, "4. Linked reference", "The green tag records the active assignment and guidance.", COPPER)
     callout(c, x, cy - 430, 161, "Timing", "The total must exactly equal the project target before storyboard approval.", "warning")
     c.showPage()
@@ -530,7 +579,9 @@ def build():
     # 17 - Assigning references
     y = page(c, 17, "Scene control", "Assign references with intent", "A reference becomes active only after you choose it, add optional guidance and select Use in scene.", dark=True)
     draw_crop(c, SHOTS / "05-storyboard.png", M, y, W - 2*M, 310, anchor=(0.5, 0.22), radius=12)
-    number_marker(c, M + 80, y - 205, 1); number_marker(c, M + 310, y - 225, 2); number_marker(c, W - M - 30, y - 252, 3)
+    number_marker(c, M + 112, y - 132, 1)
+    number_marker(c, M + 330, y - 202, 2)
+    number_marker(c, W - M - 42, y - 244, 3)
     y -= 333
     card(c, M, y, 158, 118, "1. Suggestions", "The studio compares roles and descriptions with the scene. A suggestion is a shortcut, not an instruction.", TEAL, dark=True)
     card(c, M + 174, y, 158, 118, "2. Guidance", "State what to preserve and what may change. Mention conflicts between source background and the intended scene.", COPPER, dark=True)
@@ -542,13 +593,15 @@ def build():
     c.showPage()
 
     # 18 - 5a
-    y = page(c, 18, "05A / Local review", "Rough cut", "Use local compute to check structure, timing, narration and visual direction before considering cloud spend.")
+    y = page(c, 18, "05A / Local review", "Rough cut", "Use local compute to review structure, timing, narration, captions and visual direction before considering cloud spend.")
     draw_contain(c, SHOTS / "06-rough-cut.png", M, y, 300, 500, bg=INK)
-    number_marker(c, M + 278, y - 56, 1); number_marker(c, M + 278, y - 185, 2); number_marker(c, M + 278, y - 310, 3)
     x = M + 320; cy = y
+    marker_link(c, M + 278, cy - 47.5, 1, x)
+    marker_link(c, M + 278, cy - 155.5, 2, x)
+    marker_link(c, M + 278, cy - 262.5, 3, x)
     card(c, x, cy, 187, 95, "1. Video model", "Choose an installed local model. LTX 2B is the known fast-preview route; other models require their weights and machine validation.", TEAL)
     card(c, x, cy - 108, 187, 95, "2. Narration voice", "Choose an installed English voice. Saving a new voice keeps video clips but requires a new rough-cut assembly.", COPPER)
-    card(c, x, cy - 216, 187, 93, "3. Generate", "The studio creates storyboard frames, motion clips, narration, captions and an assembled review video.", TEAL)
+    card(c, x, cy - 216, 187, 93, "3. Generate", "Create storyboard frames, motion clips, narration, captions and an assembled rough cut, then review it in the player.", TEAL)
     callout(c, x, cy - 323, 187, "Review for", "Message order, scene timing, narration pace, caption sense, product drift and any reference influence that feels too strong.", "copper")
     y -= 522
     callout(c, M, y, W - 2*M, "Local limitation", "Uploaded image pixels are not used as first frames in the current local path. Longer scenes use time-stretched preview motion. The rough cut is for creative review, not commercial use.", "warning")
@@ -557,8 +610,11 @@ def build():
     # 19 - 5b
     y = page(c, 19, "05B / Cloud evaluation", "Higgsfield video test", "This optional path prepares one Seedance 2.5 clip per storyboard scene, then assembles them with the local narration and captions.")
     draw_contain(c, SHOTS / "07-higgsfield.png", M, y, 304, 570, bg=INK)
-    number_marker(c, M + 282, y - 58, 1); number_marker(c, M + 282, y - 175, 2); number_marker(c, M + 282, y - 355, 3); number_marker(c, M + 282, y - 505, 4)
     x = M + 324; cy = y
+    marker_link(c, M + 282, cy - 43.5, 1, x)
+    marker_link(c, M + 282, cy - 151.5, 2, x)
+    marker_link(c, M + 282, cy - 269.5, 3, x)
+    marker_link(c, M + 282, cy - 384, 4, x)
     card(c, x, cy, 183, 87, "1. Model + format", "The current route uses Seedance 2.5 at 16:9, with a 480p or 720p choice.", TEAL)
     card(c, x, cy - 99, 183, 105, "2. Estimate first", "Requesting an estimate may upload selected references, but it does not submit paid video generation.", COPPER)
     card(c, x, cy - 216, 183, 107, "3. Prepared scenes", "Review each duration and reference count. Prompt-only scenes use text-to-video.", TEAL)
