@@ -1,0 +1,5 @@
+API-format ComfyUI workflows and benchmark settings belong here. A workflow is not accepted until actual output media has been validated. Never include cloud/API nodes in local benchmark workflows.
+
+`ltx_2b_098_distilled_draft.json` is a ComfyUI API workflow for the official 2B 0.9.8 distilled FP8 checkpoint. It uses core LTXV nodes, 512×320, 49 frames at 16 fps, CFG 1, and eight sampling intervals adapted from [Lightricks' 0.9.8 distilled configuration](https://github.com/Lightricks/LTX-Video/blob/main/configs/ltxv-2b-0.9.8-distilled.yaml). It is a single-stage preview adaptation; benchmark results, not the workflow file alone, determine whether it works on this machine.
+
+`wan_22_5b_i2v_draft.json` follows the [official Wan 2.2 ComfyUI 5B image-to-video example](https://docs.comfy.org/tutorials/video/wan/wan2_2), with a lower 800×448 preview resolution and animated WebP output for the studio's existing clip conversion. It has not yet been benchmarked here. The LTX 13B option substitutes the official FP8 distilled checkpoint into the LTX draft workflow; it also needs a live memory and output check.

@@ -1,0 +1,9 @@
+# Architecture
+
+The application is a single-user browser studio: React/TypeScript/Vite UI, FastAPI backend, SQLite persistence, local ComfyUI/LTX generation, local Kokoro/faster-whisper/FFmpeg utilities, OpenAI planning, and optional Higgsfield cloud video evaluation.
+
+`backend/config.py` loads server-side secrets and enforces a loopback ComfyUI URL. `backend/providers.py` currently exposes truthful provider health plus a ComfyUI submit/history path. `backend/orchestration.py` loads editable model profiles from `config/model_profiles.json` and uses OpenAI Responses API structured output with usage capture. `backend/main.py` exposes provider and machine status on localhost. Practical benchmark scripts exercise generation directly and save evidence in ignored `data/benchmarks/`. LTX 2B FP8 uses an official checkpoint and T5 encoder through core ComfyUI nodes; 512×320 is the low-headroom default and 768×480 passed on an otherwise free GPU.
+
+The data model tracks project, brand kit, brief, approved claims, approval gates, shot/asset lineage, Higgsfield request IDs, and provider estimates. All generated media, including Higgsfield evaluations, are non-commercial drafts. LTX content must carry an intelligible `AI-generated` disclaimer wherever displayed or shared, per its licence. There is no commercial final export path yet. Higgsfield jobs require a per-scene estimate summed into one project approval; each request ID is persisted, and an ambiguous paid submission is held for review rather than replayed.
+
+The stage provider interface will expose capabilities, health, cost estimate, submission, and result retrieval while keeping provider-specific details behind adapters. Generation and assembly remain separate so individual shots can be replaced without rewriting the campaign graph.

@@ -1,0 +1,15 @@
+{
+  "default": "astra-medium",
+  "profiles": [
+    {"id": "astra-light", "label": "Astra Light", "model": "gpt-6-astra", "reasoning_effort": "low"},
+    {"id": "astra-medium", "label": "Astra Medium", "model": "gpt-6-astra", "reasoning_effort": "medium"},
+    {"id": "astra-high", "label": "Astra High", "model": "gpt-6-astra", "reasoning_effort": "high"},
+    {"id": "astra-extra-high", "label": "Astra Extra High", "model": "gpt-6-astra", "reasoning_effort": "xhigh"},
+    {"id": "astra-maximum", "label": "Astra Maximum", "model": "gpt-6-astra", "reasoning_effort": "max"},
+    {"id": "sol-light", "label": "Sol Light", "model": "gpt-5.6-sol", "reasoning_effort": "low"},
+    {"id": "sol-medium", "label": "Sol Medium", "model": "gpt-5.6-sol", "reasoning_effort": "medium"},
+    {"id": "sol-high", "label": "Sol High", "model": "gpt-5.6-sol", "reasoning_effort": "high"},
+    {"id": "sol-extra-high", "label": "Sol Extra High", "model": "gpt-5.6-sol", "reasoning_effort": "xhigh"},
+    {"id": "sol-maximum", "label": "Sol Maximum", "model": "gpt-5.6-sol", "reasoning_effort": "max"}
+  ]
+}

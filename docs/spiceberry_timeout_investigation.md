@@ -1,0 +1,9 @@
+# SpiceBerry planning timeout, 2026-09-27
+
+Project `9091cb2b-ecac-45f5-b36f-3f3e828c4b87` submitted one paid planning job, `e9e06eec-70a2-4347-8873-877cda8cdb4c`. It changed from queued at 20:07:03 UTC to `NEEDS_REVIEW` at 20:08:03 UTC with `APITimeoutError`. The configured OpenAI client timeout was 60 seconds and automatic retries were disabled. No plan or provider response ID was saved. The local usage table has no response for this attempt; that does **not** establish whether the provider processed or charged it.
+
+The saved brief is 8,038 characters and the old full planning prompt was 12,747 characters. The attached creative treatment specifies a 45–60-second primary film plus shorter cutdowns. The old planner always demanded five shots and a 15-second film, which conflicted with the user's intent. A prior, shorter live test completed in 46 seconds, so the 60-second limit left little headroom for the much longer input. The exact contribution of input length versus provider or network delay is unknown.
+
+The saved `approved_claims` field also contains a heading saying some listed claims would not yet be used without checking. That makes the list unsuitable as an unqualified set of approved claims. This is a data-placement issue; no regulatory determination is made here.
+
+The studio now detects 15, 30, 45, or 60 seconds from a brief, shows the resolved duration and shot count before a paid request, and permits editing the target, brief, and claim lists. This project was set to a 60-second master, retaining its reference image and the original failed-job record. Its brief approval was reset. Preflight blocks planning until the conflicting approved-claims text is reviewed. The client timeout defaults to 300 seconds and paid jobs still never retry automatically. The 60-second planning and local rendering paths have offline tests but have not been exercised with a new paid call or a 60-second render.
